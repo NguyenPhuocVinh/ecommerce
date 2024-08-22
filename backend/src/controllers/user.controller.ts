@@ -12,10 +12,9 @@ export class UserController {
             const userDto = req.body;
 
             const newUser = await UserService.registerUser(userDto);
-            return res.status(StatusCodes.CREATED).json({
-                message: "User registered successfully",
-                user: newUser
-            });
+            return res.status(StatusCodes.CREATED).json(
+                newUser
+            );
         } catch (error: any) {
             return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
         }
@@ -29,6 +28,20 @@ export class UserController {
 
             return res.status(StatusCodes.OK).json({
                 message: "User logged in successfully",
+                user
+            });
+        } catch (error: any) {
+            return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+        }
+    }
+
+    static async verifyUser(req: Request, res: Response) {
+        try {
+            const { email, otp } = req.body;
+            const user = await UserService.veryfyUser({ email, otp });
+
+            return res.status(StatusCodes.OK).json({
+                message: "User verified successfully",
                 user
             });
         } catch (error: any) {

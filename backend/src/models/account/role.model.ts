@@ -1,6 +1,6 @@
 import mongoose, { Document, model, Schema, Types } from "mongoose";
-import { IRole } from "../types/role.type";
-import { ROLE_NAME, ROLE_STATUS } from "../libs/contants/role";
+import { IRole } from "../../types/role.type";
+import { ROLE_NAME, ROLE_STATUS } from "../../libs/contants/role";
 export interface RoleDocument extends IRole, Document { };
 
 const RoleSchema = new Schema<RoleDocument>({

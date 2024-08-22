@@ -4,6 +4,7 @@
 //     }
 
 import { ROLE_STATUS } from "../libs/contants/role"
+import { TEMPLATE_STATUS } from "../libs/contants/template"
 
 //     export interface Request {
 //         objKey?: any
@@ -71,4 +72,12 @@ export interface IOtp {
     status: boolean
     expired_at: Date
 }
+
+export interface ITemplate {
+    templateId: Number
+    name: string
+    status: TEMPLATE_STATUS
+    html: string
+}
+
 

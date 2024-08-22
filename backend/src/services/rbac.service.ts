@@ -1,7 +1,7 @@
 import { AppError } from "../erorrs/AppError.error";
 import { StatusCodes } from "http-status-codes";
 import { ResourceModel } from "../models/resource.model";
-import { RoleModel } from "../models/role.model";
+import { RoleModel } from "../models/account/role.model";
 
 export class RbacService {
     static async createResource({ name, slug, description }: { name: string, slug: string, description: string }) {
