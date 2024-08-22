@@ -30,6 +30,7 @@ export class ProductController {
     }
 
     static async publishProductByShop(req: Request, res: Response) {
+        console.log(req.user._id)
         const data = await ProductService.publishProductByShop({ shop: req.user._id, productId: req.params.productId })
         res.status(StatusCodes.CREATED).json(data)
     }

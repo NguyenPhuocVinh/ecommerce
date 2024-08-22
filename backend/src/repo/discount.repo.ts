@@ -1,3 +1,5 @@
+import { StatusCodes } from "http-status-codes"
+import { AppError } from "../erorrs/AppError.error"
 import { DiscountModel } from "../models/discount.model"
 import { getSelectData, QueryFilter } from "../utils/filter.util"
 
@@ -27,5 +29,12 @@ export class DiscountRepo {
                 select: 'name'
             })
             .lean()
+    }
+
+    static async checkDiscountExists({ code, shopId }: { code: string, shopId: string }) {
+        const foundDiscount = await DiscountModel.findOne({ code, shop: shopId }).lean();
+        if (!foundDiscount)
+            throw new AppError(StatusCodes.NOT_FOUND, `Discount not found`);
+        return foundDiscount;
     }
 }

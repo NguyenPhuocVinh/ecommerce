@@ -3,6 +3,8 @@
 //         errorMessage?: string
 //     }
 
+import { ROLE_STATUS } from "../libs/contants/role"
+
 //     export interface Request {
 //         objKey?: any
 //         keyStore?: any
@@ -48,3 +50,25 @@ export interface IDecodeToken {
     userId?: any,
     email?: string
 }
+
+export interface IUser {
+    // _id?: any,
+    slug: string,
+    name: string,
+    password: string,
+    email: string,
+    phone: string
+    sex: string,
+    avatar: string,
+    date_of_birth: Date,
+    role: any,
+    status: ROLE_STATUS
+}
+
+export interface IOtp {
+    otp: string,
+    email: string,
+    status: boolean
+    expired_at: Date
+}
+

@@ -2,6 +2,8 @@ import express from "express";
 import shopRouter from "./shop.route";
 import productRouter from "./product.route";
 import discountRouter from "./discount.route";
+import rbacRouter from "./rbac.route";
+import authRouter from "./auth.route";
 const apiRouter = express.Router();
 
 apiRouter.get("/", (req, res) => {
@@ -10,5 +12,7 @@ apiRouter.get("/", (req, res) => {
 
 apiRouter.use(`/shop`, shopRouter);
 apiRouter.use(`/product`, productRouter);
-apiRouter.use(`/discount`, discountRouter)
+apiRouter.use(`/discount`, discountRouter);
+apiRouter.use(`/rbac`, rbacRouter);
+apiRouter.use(`/auth`, authRouter);
 export default apiRouter;
