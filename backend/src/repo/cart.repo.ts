@@ -13,9 +13,10 @@ export class CartRepo {
         const filter: QueryFilter = { userId, state: CART_STATE.ACTIVE };
         const update = {
             $push: { products: product },
-            $inc: { count_products: +1 }
+            $inc: { count_products: 1 }
         };
         const options = { new: true, upsert: true };
+        await ProductRepo.updateProductQuantity({ product, type: 'SUB' })
         return CartModel.findOneAndUpdate(filter, update, options);
     }
 
