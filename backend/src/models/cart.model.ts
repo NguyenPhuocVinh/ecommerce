@@ -13,11 +13,24 @@ export interface CartDocument extends ICart, Document { };
 
 const CartSchema = new Schema<CartDocument>({
     state: { type: String, required: true, enum: Object.values(CART_STATE), default: CART_STATE.ACTIVE },
-    products: [{
-        type: String
-    }],
+    products: [
+        {
+            productId: { type: String, required: true },
+            quantity: { type: Number, required: true },
+            shopId: { type: String, required: true },
+        }
+    ],
     count_product: { type: Number, default: 0 },
-    userId: { type: String, required: true }
-}, { timestamps: true })
+    userId: { type: Types.ObjectId, ref: 'User' }
+}, { timestamps: true });
 
+
+// CartSchema.pre('findOneAndUpdate', async function (next) {
+//     const cart = await this.model.findOne(this.getQuery())
+//     if (cart) {
+//         cart.count_products = cart.products.length
+//         await cart.save()
+//     }
+//     next()
+// })
 export const CartModel = model<CartDocument>('Cart', CartSchema);

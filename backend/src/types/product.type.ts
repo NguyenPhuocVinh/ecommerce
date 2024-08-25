@@ -1,4 +1,5 @@
 export interface IProduct {
+    _id?: any,
     name: string,
     thumb?: string,  // Make thumb optional
     description?: string,

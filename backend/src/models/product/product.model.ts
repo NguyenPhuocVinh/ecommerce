@@ -3,7 +3,9 @@ import slugify from "slugify";
 import { IProduct } from "../../types/product.type";
 import { PRODUCT_TYPE } from "../../libs/contants/productType";
 
-export interface ProductDocument extends IProduct, mongoose.Document { }
+export interface ProductDocument extends IProduct, mongoose.Document {
+    _id: mongoose.Types.ObjectId;
+}
 
 const ProductSchema = new mongoose.Schema<ProductDocument>({
     name: { type: String, required: true },
@@ -11,7 +13,14 @@ const ProductSchema = new mongoose.Schema<ProductDocument>({
     slug: { type: String },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    quantity: { type: Number, required: true },
+    quantity: {
+        type: Number, required: true, validate: {
+            validator: function (value) {
+                return value >= 0;
+            },
+            message: 'Quantity cannot be negative'
+        }
+    },
     type: { type: String, required: true, enum: Object.values(PRODUCT_TYPE) },
     shop: { type: mongoose.Schema.Types.ObjectId, ref: "Shop" },
     attributes: { type: mongoose.Schema.Types.Mixed, required: true },

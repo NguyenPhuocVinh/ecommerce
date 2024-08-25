@@ -77,7 +77,7 @@ export class ProductService {
             sort,
             page,
             filter,
-            select: ['name', 'price', 'thumb']
+            select: ['name', 'price', 'thumb', 'shop', 'quantity']
         });
     }
 
@@ -126,11 +126,11 @@ class Product {
         return newProduct
     }
 
-    async updateProduct(product_id: string, payload: any) {
+    async updateProduct(productId: string, payload: any) {
         const productAfterRemoveEmpty = removeUndefinedObject(payload)
         const productAfterUpdateNested = updateNestedObjectParser(productAfterRemoveEmpty)
         return await ProductRepo.updateProductById({
-            product_id, payload: productAfterUpdateNested, model: ProductModel as any
+            productId, payload: productAfterUpdateNested, model: ProductModel as any
         })
     }
 
@@ -160,15 +160,15 @@ class Cloth extends Product {
         return newProduct
     }
 
-    async updateProduct(product_id: string) {
+    async updateProduct(productId: string) {
         if (this.attributes) {
             await ProductRepo.updateProductById({
-                product_id,
+                productId,
                 payload: this.attributes,
                 model: ClothModel as any
             })
         }
-        return super.updateProduct(product_id, this)
+        return super.updateProduct(productId, this)
     }
 
 }

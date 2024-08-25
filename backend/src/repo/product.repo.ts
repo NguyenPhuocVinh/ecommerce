@@ -6,6 +6,7 @@ import { AppError } from "../erorrs/AppError.error";
 import { StatusCodes } from "http-status-codes";
 import mongoose, { Model, SortOrder, Document, Types } from "mongoose";
 import { getSelectData, unGetSelectData } from "../utils/filter.util";
+import { ICartItem } from "../services/cart.service";
 
 export class ProductRepo {
     static async findAllDraftsForShop({ query, limit, skip }: { query: any, limit: number, skip: number }) {
@@ -76,18 +77,51 @@ export class ProductRepo {
     }
 
     static async updateProductById<TDocument extends Document, T>({
-        product_id,
+        productId,
         payload,
         model,
         isNew = true
     }: {
-        product_id: string
+        productId: string
         payload: any
         model: Model<TDocument, {}, {}, {}, Document<unknown, {}, TDocument> & T & { _id: Types.ObjectId }, any>
         isNew?: boolean
     }) {
-        return model.findOneAndUpdate({ _id: product_id }, payload, { new: isNew }).exec()
+        return model.findOneAndUpdate({ _id: productId }, payload, { new: isNew }).exec()
     }
+
+    static async updateProductQuantity({
+        product,
+        isNew = true,
+        type
+    }: {
+        product: ICartItem,
+        isNew?: boolean,
+        type?: 'ADD' | 'SUB'
+    }) {
+        const { productId, quantity, shopId } = product;
+        const filter = { _id: productId, shop: shopId };
+        const options = { new: isNew };
+
+
+        let update;
+        if (type === 'ADD') {
+            update = { $inc: { quantity: quantity } };
+        } else if (type === 'SUB') {
+            update = { $inc: { quantity: -quantity } };
+        } else {
+            throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid type');
+        }
+        const findProduct = await ProductModel.findOne(filter)
+        console.log('findProduct', findProduct)
+
+        const updated = await ProductModel.findOneAndUpdate(filter, update, options).exec();
+        // if (!updated) {
+        //     throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
+        // }
+        return updated;
+    }
+
 
 
     private static async queryProduct({ query, limit, skip }: { query: any, limit: number, skip: number }) {
