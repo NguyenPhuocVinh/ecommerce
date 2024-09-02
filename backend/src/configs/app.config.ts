@@ -26,7 +26,14 @@ export const AppConfig = {
         redirectUri: REDIRECT_URI,
         refreshToken: REFRESH_TOKEN,
         emailUser: EMAIL_USER,
-    }
+    },
+    redis: {
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+        password: process.env.REDIS_PASSWORD || '123456',
+        username: process.env.REDIS_USERNAME || 'nguyenphuocvinh',
+        ioRedisPort: process.env.REDIS_PORT || 6379,
+        ioRedisHost: process.env.REDIS_HOST || 'localhost'
+    },
 };
 
 export const MongoDBConfig = {

@@ -1,4 +1,4 @@
-import mongoose, { model, Model, Types } from "mongoose";
+import mongoose, { model, Model, Schema, Types } from "mongoose";
 import { IInventory } from "../types/inventory.type";
 // export interface IInventory {
 //     product?: IProduct | string,
@@ -28,10 +28,9 @@ const InventorySchema = new mongoose.Schema<InventoryDocument>({
         ref: 'Shop',
         required: true
     },
-    reservations: [{
-        type: String,
-        default: []
-    }]
+    reservations: {
+        type: Schema.Types.Mixed, default: []
+    }
 }, { timestamps: true })
 
 export const InventoryModel = model<InventoryDocument>('Inventory', InventorySchema)

@@ -99,8 +99,8 @@ export class ProductRepo {
         isNew?: boolean,
         type?: 'ADD' | 'SUB'
     }) {
-        const { productId, quantity, shopId } = product;
-        const filter = { _id: productId, shop: shopId };
+        const { productId, quantity, shopId } = product
+        // const filter = { _id: productId, shop: shopId };
         const options = { new: isNew };
 
 
@@ -112,10 +112,9 @@ export class ProductRepo {
         } else {
             throw new AppError(StatusCodes.BAD_REQUEST, 'Invalid type');
         }
-        const findProduct = await ProductModel.findOne(filter)
-        console.log('findProduct', findProduct)
 
-        const updated = await ProductModel.findOneAndUpdate(filter, update, options).exec();
+        // const updated = await ProductModel.findOneAndUpdate(filter, update, options).exec();
+        const updated = await ProductModel.findByIdAndUpdate({ _id: productId }, update, options);
         // if (!updated) {
         //     throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
         // }
@@ -132,5 +131,23 @@ export class ProductRepo {
             .limit(limit)
             .lean()
             .exec()
+    }
+
+    static async checkProductByServer(products: ICartItem[]) {
+        const productsWithDetails = await Promise.all(
+            products.map(async (product) => {
+                const foundProduct = await ProductModel.findById(product.productId).lean().exec()
+                if (foundProduct) {
+                    return {
+                        price: foundProduct.price,
+                        quantity: product.quantity,
+                        product_id: product.productId,
+                    }
+                }
+            })
+        )
+
+        // Filter out undefined values
+        return productsWithDetails.filter((product) => product !== undefined)
     }
 }

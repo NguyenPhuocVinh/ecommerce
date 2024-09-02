@@ -16,32 +16,39 @@ export interface ICartItem {
 }
 
 export class CartService {
-
-
     static async addToCartV2({ userId, product }: { userId: string; product: ICartItem }) {
-        let { name, price, productId, quantity } = product;
+        let { productId, quantity } = product;
         const foundProduct = await ProductRepo.findProduct({ productId });
         if (foundProduct) {
             if (foundProduct.quantity < quantity)
                 throw new AppError(StatusCodes.BAD_REQUEST, `Quantity must be < quantity in stock`)
             else {
-                name = foundProduct.name,
-                    price = foundProduct.price
+                product.name = foundProduct.name,
+                    product.price = foundProduct.price
             }
         }
 
         const userCart = await CartModel.findOne({ userId, state: CART_STATE.ACTIVE });
 
         if (!userCart) {
-            return CartRepo.createCartV2({ userId, product });
+            return await CartRepo.createCartV2({ userId, product });
         }
+
         const foundProductCart = userCart.products.find(p => p.productId === productId)
         if (foundProductCart) {
-            return CartRepo.updateProductQuantity({ userId, product });
+            return await CartRepo.updateProductQuantity({ userId, product });
         } else {
-            return CartRepo.addNewProductToCart({ userId, product });
+            return await CartRepo.addNewProductToCart({ userId, product });
         }
     }
 
+    static async removeProductCart({ userId, product }: { userId: string, product: ICartItem }) {
+        await CartRepo.deleteProductFromCart({ userId, product })
+        return await CartRepo.getListCarts(userId)
+    }
+
+    static async getCart(userId: string) {
+        return CartRepo.getListCarts(userId);
+    }
 
 }

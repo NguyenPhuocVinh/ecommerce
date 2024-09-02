@@ -7,11 +7,30 @@ export class CartController {
 
 
     static async addToCartV2(req: Request, res: Response) {
-        const userId = req.user._id
-        const product: ICartItem = req.body
-        const userCart = await CartService.addToCartV2({ userId, product })
-        return res.status(StatusCodes.CREATED).json(userCart)
+        try {
+            const userId = req.user._id
+            const product: ICartItem = req.body
+            const userCart = await CartService.addToCartV2({ userId, product })
+            return res.status(StatusCodes.CREATED).json(userCart)
+        } catch (error: any) {
+            res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message })
+        }
     }
 
+    static async removeProductFromCart(req: Request, res: Response) {
+        try {
+            const deleted = await CartService.removeProductCart({ userId: req.user._id, product: req.body })
+            res.status(StatusCodes.OK).json(deleted)
+        } catch (error: any) {
+            res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message })
+        }
+    }
+
+
+    static async getCart(req: Request, res: Response) {
+        const userId = req.user._id;
+        const listCart = await CartService.getCart(userId);
+        res.status(StatusCodes.OK).json(listCart)
+    }
 
 }

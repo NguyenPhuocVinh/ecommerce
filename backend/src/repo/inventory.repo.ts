@@ -21,4 +21,33 @@ export class InventoryRepo {
             location
         })
     }
+
+    static async reserveInventory({
+        productId,
+        quantity,
+        cartId
+    }: {
+        productId: string
+        quantity: number
+        cartId: string
+    }) {
+
+        const query = {
+            product: productId,
+            stock: { $gte: quantity }
+        }
+        const updateSet = {
+            $inc: { stock: -quantity },
+            $push: {
+                reservations: {
+                    cartId,
+                    quantity,
+                    create_on: new Date()
+                }
+            }
+        }
+        const options = { new: true, upsert: true }
+        return InventoryModel.findOneAndUpdate(query, updateSet, options)
+    }
+
 }
