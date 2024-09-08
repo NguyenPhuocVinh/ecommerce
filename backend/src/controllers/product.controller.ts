@@ -2,8 +2,80 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { AppError } from "../erorrs/AppError.error";
 import { ProductService } from "../services/product.service";
+import { SpuService } from "../services/spu.service";
+import { SpuServiceV2 } from "../services/spu.service.v2";
+import { SkuServiceV2 } from "../services/sku.service.v2";
+import { ElasticService } from "../services/elastic.service";
 
 export class ProductController {
+    //spu sku v2
+    static async createSpuV2(req: Request, res: Response) {
+        try {
+            const spu = await SpuServiceV2.createSpuV2(req.body);
+            return res.status(StatusCodes.CREATED).json(spu);
+        } catch (error: any) {
+            res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message })
+        }
+    }
+
+    static async searchProduct(req: Request, res: Response) {
+        try {
+            const data = await SpuServiceV2.searchProducts({ keySearch: req.query.q })
+            res.status(StatusCodes.OK).json(data)
+        } catch (error: any) {
+            res.status(error.statusCode).json({ error: error.message })
+        }
+    }
+
+    static async searchProductV2(req: Request, res: Response) {
+        try {
+            const data = await ElasticService.searchProduct({ keySearch: req.query.q as string })
+            res.status(StatusCodes.OK).json(data)
+        } catch (error: any) {
+            res.status(error.statusCode).json({ error: error.message })
+        }
+    }
+
+    static async getOneSku(req: Request, res: Response) {
+        try {
+            const data = await SkuServiceV2.getOneSku({ spuId: req.params.spuId, skuId: req.params.skuId })
+            res.status(StatusCodes.OK).json(data)
+        } catch (error: any) {
+            res.status(error.statusCode).json({ error: error.message })
+        }
+    }
+
+    static async findSpu(req: Request, res: Response) {
+        try {
+            const data = await SpuServiceV2.findSpu(req.params.spuId)
+            res.status(StatusCodes.OK).json(data)
+        } catch (error: any) {
+            res.status(error.statusCode).json({ error: error.message })
+        }
+    }
+
+    static async getAllSpu(req: Request, res: Response) {
+        try {
+            const data = await SpuServiceV2.getAllSpu()
+            res.status(StatusCodes.OK).json(data)
+        } catch (error: any) {
+            res.status(error.statusCode).json({ error: error.message })
+        }
+    }
+
+    //Start SPU, SKU
+
+    // static async createSpu(req: Request, res: Response) {
+    //     try {
+    //         req.body.shop = req.user._id;
+    //         const spu = await SpuService.createSpu(req.body);
+    //         return res.status(StatusCodes.CREATED).json(spu);
+    //     } catch (error: any) {
+    //         res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message })
+    //     }
+    // }
+
+    //END SPU, SKU
     static async createProduct(req: Request, res: Response) {
         try {
             req.body.shop = req.user._id;

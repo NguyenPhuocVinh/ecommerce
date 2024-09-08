@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import { removeUndefinedObject, updateNestedObjectParser } from "../utils/filter.util";
 import { PRODUCT_TYPE } from "../libs/contants/productType";
 import { InventoryRepo } from "../repo/inventory.repo";
+import { NotificationService } from "./notification.service";
 
 export class ProductService {
     static productRegistry: { [key: string]: any } = {};
@@ -121,6 +122,16 @@ class Product {
                 product: product_id,
                 shop: this.shop,
                 stock: this.quantity
+            })
+            console.log('push noti', this.shop._id)
+            await NotificationService.pushNotiToSystem({
+                type: 'SHOP_001',
+                receiver: 'this is a lot user',
+                sender: this.shop as any,
+                options: {
+                    product_name: this.name,
+                    shop_name: this.shop.name
+                }
             })
         }
         return newProduct

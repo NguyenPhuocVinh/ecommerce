@@ -16,6 +16,7 @@ export const REDIRECT_URI = process.env.REDIRECT_URI || '';
 export const REFRESH_TOKEN = process.env.REFRESH_TOKEN || '';
 export const EMAIL_USER = process.env.EMAIL_USER || '';
 export const CALLBACK_URL = process.env.CALLBACK_URL || '';
+export const ELASTICSEARCH_URL = process.env.ELASTICSEARCH_URL || '';
 
 export const AppConfig = {
     SERVER_HOSTNAME,
@@ -34,6 +35,9 @@ export const AppConfig = {
         ioRedisPort: process.env.REDIS_PORT || 6379,
         ioRedisHost: process.env.REDIS_HOST || 'localhost'
     },
+    elasticsearch: {
+        url: ELASTICSEARCH_URL
+    }
 };
 
 export const MongoDBConfig = {

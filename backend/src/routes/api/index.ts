@@ -7,6 +7,8 @@ import authRouter from "./auth.route";
 import emailRouter from "./email.route";
 import cartRouter from "./cart.route";
 import checkouRouter from "./checkout.route";
+import attributeRouter from "./attribute.route";
+import categoryRouter from "./category.route";
 const apiRouter = express.Router();
 
 apiRouter.get("/", (req, res) => {
@@ -21,4 +23,6 @@ apiRouter.use(`/auth`, authRouter);
 apiRouter.use(`/email`, emailRouter);
 apiRouter.use(`/cart`, cartRouter);
 apiRouter.use(`/checkout`, checkouRouter);
+apiRouter.use(`/attribute`, attributeRouter);
+apiRouter.use(`/category`, categoryRouter);
 export default apiRouter;
