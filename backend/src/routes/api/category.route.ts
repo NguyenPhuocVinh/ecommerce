@@ -6,4 +6,6 @@ const categoryRouter = Router();
 
 categoryRouter.post("/create", CategoryController.createCategory);
 
+categoryRouter.get("/all", CategoryController.getAllCategories);
+
 export default categoryRouter;  

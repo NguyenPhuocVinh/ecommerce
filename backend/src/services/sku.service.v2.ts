@@ -1,20 +1,36 @@
 import { StatusCodes } from "http-status-codes";
-import { SkuMModel } from "../models/product/sku.m";
-import { ISkuM } from "../types/product.type";
+import { SkuModel } from "../models/product/sku.model";
+import { ISku } from "../types/product.type";
 import { ShopRepo } from "../repo/shop.repo";
 import { ProductRepo } from "../repo/product.repo";
 import { SpuRepo } from "../repo/spu.repo";
 import { AppError } from "../erorrs/AppError.error";
 import { CacheService } from "./cache.service";
 import _ from "lodash";
+import { UploadService } from "./upload.service";
 
 export class SkuServiceV2 {
-    static async createSku(sku: ISkuM) {
-        const newSku = await SkuMModel.create({
+    static async createSku(sku: ISku) {
+        const newSku = await SkuModel.create({
             ...sku,
-            spu: sku.spu
+            spuId: sku.spuId
         });
         return newSku;
+    }
+
+    static async uploadImage({ files, skuId }: { files: any[], skuId: string }) {
+        const uploaded = await UploadService.uploadImage(files);
+        const update = await SkuModel.updateOne({ _id: skuId }, { thumb: uploaded.map(file => file.secure_url) }, { new: true });
+        return _.omit(update, ["createdAt", "updatedAt", "__v"]);
+    }
+
+    static async deleteSku(skuIds: string[]) {
+        const deletedSku = await SkuModel.deleteMany({ _id: { $in: skuIds } })
+        return deletedSku.deletedCount
+    }
+
+    static async deleteSkuBySpuId(spuId: string) {
+        return await SkuModel.findOneAndDelete({ spuId })
     }
 
     static async getOneSku({ spuId, skuId }: { spuId: string, skuId: string }) {
@@ -30,7 +46,7 @@ export class SkuServiceV2 {
         if (!foundSpu) throw new AppError(StatusCodes.NOT_FOUND, "Product not found");
 
         // Fetch SKU from repository
-        const foundSku = await SkuMModel.findOne({ _id: skuId, spu: spuId });
+        const foundSku = await SkuModel.findOne({ _id: skuId, spu: spuId });
         if (!foundSku) throw new AppError(StatusCodes.NOT_FOUND, "SKU not found");
 
         // Set cache
@@ -44,9 +60,13 @@ export class SkuServiceV2 {
     }
 
     static async getSkusBySpuId(spuId: string) {
-        const skus = await SkuMModel.find({ spu: spuId });
+        const skus = await SkuModel.find({ spu: spuId });
         return skus.map(sku => _.omit(sku, ["createdAt", "updatedAt", "__v"]));
     }
 
-
+    static async getPublishedSkus() {
+        const skus = await SkuModel.find();
+        const fillerPub = skus.filter(sku => sku.isPublished === true && sku.isDraft === false);
+        return fillerPub.map(sku => _.omit(sku, ["createdAt", "updatedAt", "__v"]));
+    }
 }

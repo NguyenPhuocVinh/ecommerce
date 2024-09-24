@@ -14,4 +14,13 @@ export class CategoryController {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
         }
     }
+
+    static async getAllCategories(req: Request, res: Response) {
+        try {
+            const categories = await CategoryService.getAllCategories();
+            return res.status(StatusCodes.OK).json(categories)
+        } catch (error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        }
+    }
 }

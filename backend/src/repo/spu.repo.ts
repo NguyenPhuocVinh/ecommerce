@@ -1,15 +1,15 @@
-import { ISpuM } from "../types/product.type";
-import { SpuMModel } from "../models/product/spu.m";
+import { ISpu } from "../types/product.type";
+import { SpuModel } from "../models/product/spu.model";
 
 export class SpuRepo {
     static async findSpu(spuId: string) {
-        const spu = await SpuMModel.findById(spuId);
+        const spu = await SpuModel.findById(spuId);
         return spu;
     }
 
     static async searchProductByUser({ keySearch }: { keySearch: any }) {
         const regexSearch = new RegExp(keySearch);
-        const results = await SpuMModel.find({
+        const results = await SpuModel.find({
             isPublished: true,
             $text: { $search: regexSearch.toString() }
         },
@@ -19,4 +19,5 @@ export class SpuRepo {
 
         return results
     }
+
 }

@@ -50,31 +50,13 @@ export interface IPrice {
 }
 
 
-export interface ISpu {
-    _id?: any
-    productName: string
-    slug?: string
-    thumb?: string
-    description?: string
-    price: number
-    category: any
-    quantity: number
-    shop?: any
-    attributes?: any
-    ratingsAverage?: number
-    variations?: any[]
-    isDraft?: boolean
-    isPublished?: boolean
-    isDeleted?: boolean
-}
 
 export interface SpuCreatePayload {
-    spu: ISpuM;
-    sku_list: ISkuM[];
+    spu: ISpu;
+    sku_list: ISku[];
 }
 
 export interface SkuCreatePayload {
-    tierIndex?: number[]
     default: boolean
     sort?: number
     price: number
@@ -84,20 +66,21 @@ export interface SkuCreatePayload {
     isPublished?: boolean
 }
 
-export interface ISku {
-    _id?: any
-    tierIndex?: number[]
-    default: boolean
-    sort?: number
-    price: number
-    stock: number
-    product?: ISpu
-    isDraft?: boolean
-    isPublished?: boolean
-    isDeleted?: boolean
-}
+// export interface ISku {
+//     _id?: any
+//     tierIndex?: number[]
+//     default: boolean
+//     sort?: number
+//     price: number
+//     stock: number
+//     product?: ISpu
+//     isDraft?: boolean
+//     isPublished?: boolean
+//     isDeleted?: boolean
+//     thumb?: string
+// }
 
-export interface ISpuM {
+export interface ISpu {
     _id?: any
     productName: string
     slug?: string
@@ -105,27 +88,22 @@ export interface ISpuM {
     description?: string
     price: number
     category: any
-    quantity: number
-    // shop?: any
-    attributeIds?: {
-        attributeId?: any
-        valueId?: any
-    }
+    feature: boolean
     ratingsAverage?: number
-    variations?: IVaritation[]
+    variations?: ISku[]
     isDraft?: boolean
     isPublished?: boolean
     isDeleted?: boolean
 }
-export interface ISkuM {
+export interface ISku {
     _id?: any
-    spu: ISkuM
-    tierIndex?: number[]
+    spuId: string
+    thumb: string
     default: boolean
-    sort?: number
+    color: string
+    size: string
     price: number
     stock: number
-    product?: ISpu
     isDraft?: boolean
     isPublished?: boolean
     isDeleted?: boolean

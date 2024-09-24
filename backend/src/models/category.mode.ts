@@ -15,7 +15,7 @@ const CategorySchema = new mongoose.Schema<CategoryDocument>({
     slug: { type: String },
     thumb: { type: String },
     description: { type: String, required: true },
-    parentCategory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }]
+    parentCategory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null }]
 }, { timestamps: true })
 
 CategorySchema.pre("save", function (next) {

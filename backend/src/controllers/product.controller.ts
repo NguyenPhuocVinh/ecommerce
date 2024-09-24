@@ -3,24 +3,42 @@ import { StatusCodes } from "http-status-codes";
 import { AppError } from "../erorrs/AppError.error";
 import { ProductService } from "../services/product.service";
 import { SpuService } from "../services/spu.service";
-import { SpuServiceV2 } from "../services/spu.service.v2";
 import { SkuServiceV2 } from "../services/sku.service.v2";
 import { ElasticService } from "../services/elastic.service";
+import { multipleUpload } from "../utils/upload.util";
+import cloudinary from "../configs/cloudinary.config";
+import fs from "fs";
+
 
 export class ProductController {
     //spu sku v2
-    static async createSpuV2(req: Request, res: Response) {
+    static async createSpu(req: Request, res: Response) {
         try {
-            const spu = await SpuServiceV2.createSpuV2(req.body);
+            const spu = await SpuService.createSpu(req.body);
             return res.status(StatusCodes.CREATED).json(spu);
         } catch (error: any) {
             res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message })
         }
     }
 
+    static async uploadImageSku(req: Request, res: Response) {
+        multipleUpload(req, res, async (err: any) => {
+            if (err) {
+                return res.status(StatusCodes.BAD_REQUEST).json({ error: err.message });
+            }
+            try {
+                const files = req.files as Express.Multer.File[];
+                const uploadResults = await SkuServiceV2.uploadImage({ files, skuId: req.params.skuId });
+                return res.status(StatusCodes.CREATED).json(uploadResults);
+            } catch (error: any) {
+                res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message })
+            }
+        })
+    }
+
     static async searchProduct(req: Request, res: Response) {
         try {
-            const data = await SpuServiceV2.searchProducts({ keySearch: req.query.q })
+            const data = await SpuService.searchProducts({ keySearch: req.query.q })
             res.status(StatusCodes.OK).json(data)
         } catch (error: any) {
             res.status(error.statusCode).json({ error: error.message })
@@ -45,9 +63,18 @@ export class ProductController {
         }
     }
 
+    static async getPublishedSkus(req: Request, res: Response) {
+        try {
+            const data = await SkuServiceV2.getPublishedSkus()
+            res.status(StatusCodes.OK).json(data)
+        } catch (error: any) {
+            res.status(error.statusCode).json({ error: error.message })
+        }
+    }
+
     static async findSpu(req: Request, res: Response) {
         try {
-            const data = await SpuServiceV2.findSpu(req.params.spuId)
+            const data = await SpuService.findSpu(req.params.spuId)
             res.status(StatusCodes.OK).json(data)
         } catch (error: any) {
             res.status(error.statusCode).json({ error: error.message })
@@ -56,7 +83,7 @@ export class ProductController {
 
     static async getAllSpu(req: Request, res: Response) {
         try {
-            const data = await SpuServiceV2.getAllSpu()
+            const data = await SpuService.getAllSpu()
             res.status(StatusCodes.OK).json(data)
         } catch (error: any) {
             res.status(error.statusCode).json({ error: error.message })

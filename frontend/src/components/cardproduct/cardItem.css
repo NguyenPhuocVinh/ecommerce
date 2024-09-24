@@ -1,0 +1,10 @@
+.icon-cart {
+    position: absolute;
+    bottom: 110px;
+    right: 10px;
+    font-size: 2rem;
+}
+
+.icon-cart:hover {
+    cursor: pointer;
+}

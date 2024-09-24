@@ -3,6 +3,7 @@ import http from "http";
 import helmet from "helmet";
 import morgan from "morgan";
 import compression from "compression";
+import cors from "cors";
 
 import { logginHandler } from "../middlewares/loggingHandler.middleware";
 import { errorHandler } from "../middlewares/errorHandler.middleware";
@@ -32,6 +33,10 @@ export class WebService {
             helmet(),
             morgan("dev"),
             compression(),
+            cors({
+                origin: 'http://localhost:3000',
+                credentials: true,
+            }),
             // logginHandler,
             mainRouter,
             routerNotFound,
