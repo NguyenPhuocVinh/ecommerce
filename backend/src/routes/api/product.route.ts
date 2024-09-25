@@ -9,6 +9,9 @@ const productRouter = express.Router();
 productRouter.post(`/create`, ProductController.createProduct)
 productRouter.post(`/create/variant`, ProductController.createVariant)
 
+//search
+productRouter.post(`/search`, ProductController.searchProduct)
+
 //Upload Image
 
 //Get Publish

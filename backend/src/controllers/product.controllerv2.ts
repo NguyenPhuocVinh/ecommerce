@@ -8,6 +8,7 @@ import { UploadService } from "../services/upload.service";
 import { IProductCreatePayload } from "../types/product";
 import { multipleUpload } from "../utils/upload.util";
 import { unlink } from "fs/promises"
+import { IProduct } from "../models/product/product.v2.model";
 
 export class ProductController {
 
@@ -182,9 +183,10 @@ export class ProductController {
     //update 
     static async updateProduct(req: Request, res: Response) {
         try {
+            const payload: Partial<IProduct> = req.body
             const products = await ProductService.updateProduct({
                 productId: req.params.productId,
-                payload: req.body
+                payload: payload
             });
             res.status(StatusCodes.OK).json(products);
         } catch (error: any) {
@@ -197,6 +199,16 @@ export class ProductController {
         try {
             const { productIds } = req.body;
             const products = await ProductService.deleteProduct(productIds);
+            res.status(StatusCodes.OK).json(products);
+        } catch (error: any) {
+            res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });
+        }
+    }
+
+    //search
+    static async searchProduct(req: Request, res: Response) {
+        try {
+            const products = await ProductService.searchProduct(req.query.q)
             res.status(StatusCodes.OK).json(products);
         } catch (error: any) {
             res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message });

@@ -29,7 +29,7 @@ export class ProductService {
                     return await VariantModel.findById(variant._id).populate('attributes.value').exec();
                 })
             );
-            await ElasticService.createData([newProduct])
+            await ElasticService.createData(newProduct)
             return {
                 product: {
                     product: newProduct,
@@ -37,7 +37,7 @@ export class ProductService {
                 }
             };
         }
-        await ElasticService.createData([newProduct])
+        await ElasticService.createData(newProduct)
         return newProduct;
     }
 
@@ -202,16 +202,17 @@ export class ProductService {
     }
 
     //update
-    static async updateProduct({ productId, payload }: { productId: string, payload: IProduct }) {
+    static async updateProduct({ productId, payload }: { productId: string, payload: Partial<IProduct> }) {
         const updatedProduct = await ProductModel.findByIdAndUpdate(
             productId,
-            payload,
-            { new: true }
+            { $set: payload },
+            { new: true, lean: true }
         )
         if (!updatedProduct) {
             throw { statusCode: StatusCodes.NOT_FOUND, message: 'Product not found.' };
         }
-        await ElasticService.updateProduct({ productId, payload })
+
+        await ElasticService.updateProduct({ productId, ...payload })
         return updatedProduct
     }
 
@@ -229,5 +230,9 @@ export class ProductService {
         };
     }
 
+    //search
+    static async searchProduct(keySearch: any) {
+        return await ElasticService.searchProduct(keySearch)
+    }
 
 }
