@@ -43,7 +43,7 @@ const Home: FC = () => {
                     <img src={col2} alt="col2" className="w-100 h-100 object-fit-cover" />
                 </Col>
             </Row>
-            <Row className="mt-5 d-flex justify-content-center">
+            {/* <Row className="mt-5 d-flex justify-content-center">
                 {products?.slice(0, 4).map((product, index) => (
                     <Col xs={12} sm={6} md={4} lg={3} key={index} className="mb-4 mx-auto">
                         <CardItem
@@ -53,7 +53,7 @@ const Home: FC = () => {
                         />
                     </Col>
                 ))}
-            </Row>
+            </Row> */}
 
 
         </Container>

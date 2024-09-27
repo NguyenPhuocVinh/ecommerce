@@ -158,8 +158,6 @@ export class ElasticService {
                 fields: updates
             };
 
-            console.log(params)
-
             await esClient.update({
                 index: 'products',
                 id: productId,
@@ -209,6 +207,15 @@ export class ElasticService {
 
 
         return filteredProducts;
+    }
+
+    //delete
+    static async deleteProduct(productId: string) {
+        const deleteProduct = await esClient.delete({
+            index: 'products',
+            id: productId
+        })
+        return deleteProduct.result
     }
 
 }

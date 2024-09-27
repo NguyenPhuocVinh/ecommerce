@@ -12,4 +12,13 @@ export class AttributeController {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
         }
     }
+
+    static async getAllAttributes(req: Request, res: Response) {
+        try {
+            const attribute = await AttributeService.getAllAttributes()
+            return res.status(StatusCodes.OK).json(attribute)
+        } catch (error) {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+        }
+    }
 }

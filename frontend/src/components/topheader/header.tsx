@@ -1,4 +1,4 @@
-import Button from 'react-bootstrap/Button';
+// import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
@@ -52,7 +52,7 @@ const Header: FC = () => {
         debounceRef.current = setTimeout(() => {
             if (query.trim().length > 2) {
                 setLoading(true);
-                axiosInstance.get(`/product/search/v2`, { params: { q: query } })
+                axiosInstance.post(`/product/search?q=${query}`,)
                     .then(response => {
                         setSearchResults(response.data);
                         setLoading(false);

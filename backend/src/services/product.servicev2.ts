@@ -224,6 +224,9 @@ export class ProductService {
 
         const deletedVariants = await VariantModel.deleteMany({ productId: { $in: productIds } });
 
+        productIds.map(productId => {
+            ElasticService.deleteProduct(productId)
+        })
         return {
             deletedProducts,
             deletedVariants,
